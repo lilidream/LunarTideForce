@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>1</title>
+	<script type="text/javascript">
+		var R = 6378137;
+		var D = 384403900;
+		var Me = 5.965e24;
+		var Mm = 7.349e22;
+		
+		var G = 6.754e-11;
+		var T = 27.32*24*3600; //unit:s
+
+		function cal(alpha){
+			var d = D*(Mm/(Me+Mm));
+			alpha = alpha*3.1415926/180;
+			
+			var gamma = Math.acos(d/R);
+			var r = R*Math.cos(alpha)-d;
+			var F = 4*Math.PI**2/T**2*r;
+
+			var Fv = F*Math.cos(alpha);
+			var ll = D**2+R**2-2*D*R*Math.cos(alpha);
+			var l = Math.sqrt(ll);
+			var beta = Math.acos((R**2+ll-D**2)/(2*R*l))-Math.PI/2;
+			var Gm = G*Mm/(D**2+R**2-2*D*R*Math.cos(alpha));
+			var Gmv = Gm * Math.sin(beta);
+			var FFv = Gmv + Fv;
+
+			console.log(Fv*1e6,Gmv*1e6,FFv*1e6)
+			return Fv,Gmv;
+		}
+
+		function p() {
+			var r = document.getElementById("result");
+			var t = "";
+			for (var i=0;i<90;i++){
+				t += i+"	";
+				var a,b = cal(i);
+				t += a*1e6+' '+b*1e6+" ";
+			}
+			r.innerHTML = t;
+		}
+
+	</script>
+</head>
+<body>
+<div id='result'></div>
+</body>
+</html>
